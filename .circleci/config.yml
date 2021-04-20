@@ -10,27 +10,6 @@ orbs:
   slack: circleci/slack@4.4.0
 
 jobs:
-  notify:
-    docker:
-      - image: 'cimg/base:stable'
-    steps:
-      - slack/notify:
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
-          event: always
   test:
     parameters:
       os:
@@ -49,15 +28,18 @@ jobs:
           name: Install dependencies
           command: npm ci
       - run: npm test
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: basic_success_1
 
 workflows:
-  send-notification:
-    jobs:
-      - notify:
-          context: Slack
-  all-tests:
+  test-and-notify:
     jobs:
       - test:
+          context: Slack
           matrix:
             parameters:
               os: [linux]
