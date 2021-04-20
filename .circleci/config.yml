@@ -23,6 +23,9 @@ jobs:
           command: echo ${PROJECT_MONGODB_URI} > .env
       - node/install:
           node-version: << parameters.node-version >>
+      - run:
+          name: Install dependencies
+          command: npm ci
       - run: npm test
 
 workflows:
