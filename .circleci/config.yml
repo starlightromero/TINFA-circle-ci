@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Echo MONGODB_URI
-          command: echo $MONGODB_URI > .env
+          command: echo ${PROJECT_MONGODB_URI} > .env
       - run:
           name: Install npm dependenies
           command: npm ci
