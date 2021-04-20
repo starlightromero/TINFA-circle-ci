@@ -4,13 +4,11 @@ jobs:
   test:
     docker:
       - image: circleci/node:14
-    environment:
-      MONGODB_URI: $MONGODB_URI
     steps:
       - checkout
       - run:
           name: Echo MONGODB_URI
-          command: echo $MONGODB_URI > .env
+          command: echo mongodb+srv://redpill:DNcajUKLY8bHiR37@cluster0.z3eyd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority > .env
       - run:
           name: Cat env
           command: cat .env
