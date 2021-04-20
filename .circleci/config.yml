@@ -9,6 +9,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Echo MONGODB_URI
+          command: echo $MONGODB_URI
+      - run:
           name: Install npm dependenies
           command: npm ci
       - run:
