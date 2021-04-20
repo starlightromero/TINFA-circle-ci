@@ -1,22 +1,35 @@
 version: 2.1
 
+executors:
+  linux:
+    docker:
+      - image: cimg/base:2020.01
+
+orbs:
+  node: circleci/node@4.2.1
+
 jobs:
   test:
-    docker:
-      - image: circleci/node:14
+    parameters:
+      os:
+        type: executor
+      node-version:
+        type: string
+    executor: << parameters.os >>
     steps:
       - checkout
       - run:
-          name: Export environment variables to env
+          name: Echo environment variables
           command: echo ${PROJECT_MONGODB_URI} > .env
-      - run:
-          name: Install npm dependenies
-          command: npm ci
-      - run:
-          name: Run Tests
-          command: npm test
+      - node/install:
+          node-version: << parameters.node-version >>
+      - run: npm test
 
 workflows:
-  run_test:
+  all-tests:
     jobs:
-      - test
+      - test:
+          matrix:
+            parameters:
+              os: [linux]
+              node-version: ["10.9.0", "11.9.0", "12.9.1", "13.9.0"]
