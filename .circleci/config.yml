@@ -4,11 +4,10 @@ jobs:
   test:
     docker:
       - image: circleci/node:14
+    environment:
+      MONGODB_URI: ${PROJECT_MONGODB_URI}
     steps:
       - checkout
-      - run:
-          name: Echo MONGODB_URI
-          command: echo ${PROJECT_MONGODB_URI} > .env
       - run:
           name: Install npm dependenies
           command: npm ci
