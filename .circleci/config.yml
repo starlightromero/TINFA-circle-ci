@@ -8,10 +8,7 @@ jobs:
       - checkout
       - run:
           name: Echo MONGODB_URI
-          command: echo mongodb+srv://redpill:DNcajUKLY8bHiR37@cluster0.z3eyd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority > .env
-      - run:
-          name: Cat env
-          command: cat .env
+          command: echo $MONGODB_URI > .env
       - run:
           name: Install npm dependenies
           command: npm ci
