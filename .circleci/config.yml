@@ -1,16 +1,21 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@4.1
+jobs:
+  test:
+    docker:
+      - image: circleci/node:14
+    environment:
+      MONGODB_URI: $MONGODB_URI
+    steps:
+      - checkout
+      - run:
+          name: Install npm dependenies
+          command: npm ci
+      - run:
+          name: Run Tests
+          command: npm test
 
 workflows:
-  matrix-tests:
+  run_test:
     jobs:
-      - node/test:
-          version: '10.x.x'
-      - node/test:
-          version: '12.x.x'
-      - node/test:
-          version: '14.x.x'
-      - node/test:
-          version: '15.x.x'
+      - test
