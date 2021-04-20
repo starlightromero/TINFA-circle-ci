@@ -7,8 +7,30 @@ executors:
 
 orbs:
   node: circleci/node@4.2.1
+  slack: circleci/slack@4.4.0
 
 jobs:
+  notify:
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a text notification*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: always
   test:
     parameters:
       os:
@@ -29,6 +51,10 @@ jobs:
       - run: npm test
 
 workflows:
+  send-notification:
+    jobs:
+      - notify:
+          context: slack-secrets
   all-tests:
     jobs:
       - test:
