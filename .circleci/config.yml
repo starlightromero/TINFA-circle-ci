@@ -12,6 +12,9 @@ jobs:
           name: Echo MONGODB_URI
           command: echo $MONGODB_URI > .env
       - run:
+          name: Cat env
+          command: cat .env
+      - run:
           name: Install npm dependenies
           command: npm ci
       - run:
