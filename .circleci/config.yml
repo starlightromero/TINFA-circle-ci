@@ -52,6 +52,7 @@ jobs:
       - heroku/install
       - heroku/push-docker-image:
           app-name: ${PROJECT_HEROKU_APP}
+          api-key: PROJECT_HEROKU_API_KEY
 
 workflows:
   version: 2
