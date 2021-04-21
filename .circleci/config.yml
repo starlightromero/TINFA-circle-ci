@@ -11,6 +11,7 @@ orbs:
   heroku: circleci/heroku@1.2.6
 
 workflows:
+  version: 2
   test-build-and-deploy:
     jobs:
       - test:
