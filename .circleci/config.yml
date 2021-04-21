@@ -40,6 +40,11 @@ workflows:
     jobs:
       - test:
           context: Slack
+          filters:
+            branches:
+              only:
+                - development
+                - production
           matrix:
             parameters:
               os: [linux]
