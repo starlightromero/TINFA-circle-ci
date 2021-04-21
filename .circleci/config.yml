@@ -49,7 +49,7 @@ jobs:
          name: Build docker image
          command: |
           docker build -t tinfa-circle-ci/node .
-          docker tag tinfa-circle-ci/node registry.heroku.com/$PROJECT_HEROKU_APP/web
+          docker tag tinfa-circle-ci/node registry.heroku.com/tinfa-circle-ci/web
   deploy:
     docker:
       - image: cimg/base:2020.01
@@ -65,10 +65,10 @@ jobs:
           command: docker login --username=$PROJECT_HEROKU_LOGIN --password=$PROJECT_HEROKU_API_KEY registry.heroku.com
       - run:
           name: Push Docker Image to Heroku
-          command: docker push tinfa-circle-ci/node; docker push registry.heroku.com/$PROJECT_HEROKU_APP/web;
+          command: docker push tinfa-circle-ci/node; docker push registry.heroku.com/tinfa-circle-ci/web;
       - run:
           name: Release Heroku App
-          command: heroku container:release web --app $PROJECT_HEROKU_APP
+          command: heroku container:release web --app tinfa-circle-ci
 
 workflows:
   version: 2
