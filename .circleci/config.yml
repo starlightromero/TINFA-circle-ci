@@ -54,7 +54,6 @@ jobs:
       - heroku/push-docker-image:
           app-name: ${PROJECT_HEROKU_APP}
 
-
 workflows:
   test-build-and-deploy:
     jobs:
