@@ -10,6 +10,35 @@ orbs:
   slack: circleci/slack@4.4.0
   heroku: circleci/heroku@1.2.6
 
+workflows:
+  test-build-and-deploy:
+    jobs:
+      - test:
+          context: Slack
+          filters:
+            branches:
+              only:
+                - development
+                - production
+          matrix:
+            parameters:
+              os: [linux]
+              node-version: ["10.24.1", "12.22.1", "14.16.1", "15.14.0"]
+      - build:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - production
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - production
+
 jobs:
   test:
     parameters:
@@ -53,32 +82,3 @@ jobs:
       - heroku/install
       - heroku/push-docker-image:
           app-name: ${PROJECT_HEROKU_APP}
-
-workflows:
-  test-build-and-deploy:
-    jobs:
-      - test:
-          context: Slack
-          filters:
-            branches:
-              only:
-                - development
-                - production
-          matrix:
-            parameters:
-              os: [linux]
-              node-version: ["10.24.1", "12.22.1", "14.16.1", "15.14.0"]
-      - build:
-          requires:
-            - test
-          filters:
-            branches:
-              only:
-                - production
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - production
