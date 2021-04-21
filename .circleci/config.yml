@@ -32,9 +32,6 @@ jobs:
       - slack/notify:
           event: fail
           template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
   build:
     docker:
       - image: cimg/base:2020.01
@@ -50,6 +47,9 @@ jobs:
          command: |
           docker build -t tinfa-circle-ci/node .
           docker tag tinfa-circle-ci/node registry.heroku.com/tinfa-circle-ci/web
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
   deploy:
     docker:
       - image: cimg/base:2020.01
@@ -69,6 +69,12 @@ jobs:
       - run:
           name: Release Heroku App
           command: heroku container:release web --app tinfa-circle-ci
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
 
 workflows:
   version: 2
@@ -86,6 +92,7 @@ workflows:
               os: [linux]
               node-version: ["10.24.1", "12.22.1", "14.16.1", "15.14.0"]
       - build:
+          context: Slack
           requires:
             - test
           # filters:
@@ -93,6 +100,7 @@ workflows:
           #     only:
           #       - production
       - deploy:
+          context: Slack
           requires:
             - build
           # filters:
