@@ -32,25 +32,7 @@ jobs:
       - slack/notify:
           event: fail
           template: basic_fail_1
-  build:
-    docker:
-      - image: cimg/base:2020.01
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 20.10.2
-      - run:
-          name: Setup Environment Variables
-          command: echo ${PROJECT_MONGODB_URI} > .env
-      - run:
-         name: Build docker image
-         command: |
-          docker build -t tinfa-circle-ci/node .
-          docker tag tinfa-circle-ci/node registry.heroku.com/tinfa-circle-ci/web
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
-  deploy:
+  build-and-deploy:
     docker:
       - image: cimg/base:2020.01
     steps:
@@ -62,13 +44,16 @@ jobs:
           command: curl https://cli-assets.heroku.com/install.sh | sh
       - run:
           name: Login to Heroku
-          command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku auth:login -i
+          command: echo ${PROJECT_HEROKU_API_KEY} | docker login --username=${PROJECT_HEROKU_LOGIN} registry.heroku.com --password-stdin
       - run:
-          name: Login to Heroku Container Registry
-          command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku container:login
+          name: Setup Environment Variables
+          command: echo ${PROJECT_MONGODB_URI} > .env
+      - run:
+          name: Build Docker Image
+          command: docker build --tag registry.heroku.com/tinfa-circle-ci/web .
       - run:
           name: Push Docker Image to Heroku
-          command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku container:push -a tinfa-circle-ci web
+          command: docker push registry.heroku.com/tinfa-circle-ci/web 
       - run:
           name: Release Heroku App
           command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku container:release web -a tinfa-circle-ci web
@@ -94,18 +79,10 @@ workflows:
             parameters:
               os: [linux]
               node-version: ["10.24.1", "12.22.1", "14.16.1", "15.14.0"]
-      - build:
+      - build-and-deploy:
           context: Slack
           requires:
             - test
-          # filters:
-          #   branches:
-          #     only:
-          #       - production
-      - deploy:
-          context: Slack
-          requires:
-            - build
           # filters:
           #   branches:
           #     only:
