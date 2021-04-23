@@ -47,7 +47,7 @@ jobs:
           command: echo $${PROJECT_HEROKU_LOGIN}
       - run:
           name: Login to Heroku
-          command: echo $${PROJECT_HEROKU_API_KEY} | docker login --username=$${PROJECT_HEROKU_LOGIN} registry.heroku.com --password-stdin
+          command: echo ${PROJECT_HEROKU_API_KEY} | docker login --username=$${PROJECT_HEROKU_LOGIN} registry.heroku.com --password-stdin
       - run:
           name: Setup Environment Variables
           command: echo ${PROJECT_MONGODB_URI} > .env
