@@ -62,7 +62,7 @@ jobs:
           command: curl https://cli-assets.heroku.com/install.sh | sh
       - run:
           name: Login to Heroku
-          command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku auth:login
+          command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku auth:login -i
       - run:
           name: Login to Heroku Container Registry
           command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku container:login
