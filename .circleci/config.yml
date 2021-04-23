@@ -61,17 +61,14 @@ jobs:
           name: Install Heroku CLI
           command: curl https://cli-assets.heroku.com/install.sh | sh
       - run:
-          name: Echo Login
-          command: echo ${PROJECT_HEROKU_LOGIN}
-      - run:
           name: Login to Heroku
-          command: docker login --username=$PROJECT_HEROKU_LOGIN --password=$PROJECT_HEROKU_API_KEY registry.heroku.com
+          command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku container:login
       - run:
           name: Push Docker Image to Heroku
-          command: docker push tinfa-circle-ci/node; docker push registry.heroku.com/tinfa-circle-ci/web;
+          command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku container:push -a tinfa-circle-ci web
       - run:
           name: Release Heroku App
-          command: heroku container:release web --app tinfa-circle-ci
+          command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku container:release web -a tinfa-circle-ci web
       - slack/notify:
           event: fail
           template: basic_fail_1
