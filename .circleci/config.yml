@@ -44,7 +44,7 @@ jobs:
           command: curl https://cli-assets.heroku.com/install.sh | sh
       - run:
           name: Login to Heroku
-          command: HEROKU_API_KEY=$${PROJECT_HEROKU_API_KEY} heroku container:login
+          command: HEROKU_API_KEY=$${HEROKU_API_KEY} heroku container:login
       - run:
           name: Setup Environment Variables
           command: echo $${PROJECT_MONGODB_URI} > .env
