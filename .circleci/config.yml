@@ -67,11 +67,11 @@ workflows:
     jobs:
       - test:
           context: Slack
-          # filters:
-          #   branches:
-          #     only:
-          #       - development
-          #       - production
+          filters:
+            branches:
+              only:
+                - development
+                - production
           matrix:
             parameters:
               os: [linux]
@@ -80,7 +80,7 @@ workflows:
           context: Slack
           requires:
             - test
-          # filters:
-          #   branches:
-          #     only:
-          #       - production
+          filters:
+            branches:
+              only:
+                - production
