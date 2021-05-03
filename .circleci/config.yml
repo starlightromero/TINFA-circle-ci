@@ -1,0 +1,86 @@
+version: 2.1
+
+executors:
+  linux:
+    docker:
+      - image: cimg/base:2020.01
+
+orbs:
+  node: circleci/node@4.2.1
+  slack: circleci/slack@4.4.0
+  heroku: circleci/heroku@1.2.6
+
+jobs:
+  test:
+    parameters:
+      os:
+        type: executor
+      node-version:
+        type: string
+    executor: << parameters.os >>
+    steps:
+      - checkout
+      - run:
+          name: Echo environment variables
+          command: echo ${PROJECT_MONGODB_URI} > .env
+      - node/install:
+          node-version: << parameters.node-version >>
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - run: npm test
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+  build-and-deploy:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.2
+      - run:
+          name: Install Heroku CLI
+          command: curl https://cli-assets.heroku.com/install.sh | sh
+      - run:
+          name: Login to Heroku
+          command: HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
+      - run:
+          name: Setup Environment Variables
+          command: echo ${MONGODB_URI} > .env
+      - run:
+          name: Build and Push Docker Image
+          command: HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a tinfa-circle-ci web
+      - run:
+          name: Release Heroku App
+          command: HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a tinfa-circle-ci web
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+
+workflows:
+  version: 2
+  test-build-and-deploy:
+    jobs:
+      - test:
+          context: Slack
+          filters:
+            branches:
+              only:
+                - development
+                - production
+          matrix:
+            parameters:
+              os: [linux]
+              node-version: ["10.24.1", "12.22.1", "14.16.1", "15.14.0"]
+      - build-and-deploy:
+          context: Slack
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - production
