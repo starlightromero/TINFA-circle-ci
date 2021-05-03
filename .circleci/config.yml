@@ -47,10 +47,10 @@ jobs:
           command: echo $${PROJECT_HEROKU_LOGIN}
       - run:
           name: Login to Heroku
-          command: echo ${PROJECT_HEROKU_API_KEY} | docker login --username=${PROJECT_HEROKU_LOGIN} registry.heroku.com --password-stdin
+          command: echo $${PROJECT_HEROKU_API_KEY} | docker login --username=$${PROJECT_HEROKU_LOGIN} registry.heroku.com --password-stdin
       - run:
           name: Setup Environment Variables
-          command: echo ${PROJECT_MONGODB_URI} > .env
+          command: echo $${PROJECT_MONGODB_URI} > .env
       - run:
           name: Build Docker Image
           command: docker build --tag registry.heroku.com/tinfa-circle-ci/web .
@@ -59,7 +59,7 @@ jobs:
           command: docker push registry.heroku.com/tinfa-circle-ci/web 
       - run:
           name: Release Heroku App
-          command: HEROKU_API_KEY=${PROJECT_HEROKU_API_KEY} heroku container:release web -a tinfa-circle-ci web
+          command: HEROKU_API_KEY=$${PROJECT_HEROKU_API_KEY} heroku container:release web -a tinfa-circle-ci web
       - slack/notify:
           event: fail
           template: basic_fail_1
