@@ -56,16 +56,16 @@ jobs:
           command: echo $${PROJECT_HEROKU_API_KEY}
       - run:
           name: Login to Heroku
-          command: HEROKU_API_KEY=$${HEROKU_API_KEY} heroku container:login
+          command: HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
       - run:
           name: Setup Environment Variables
-          command: echo $${PROJECT_MONGODB_URI} > .env
+          command: echo ${MONGODB_URI} > .env
       - run:
           name: Build and Push Docker Image
-          command: HEROKU_API_KEY=$${PROJECT_HEROKU_API_KEY} heroku container:push -a tinfa-circle-ci web
+          command: HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a tinfa-circle-ci web
       - run:
           name: Release Heroku App
-          command: HEROKU_API_KEY=$${PROJECT_HEROKU_API_KEY} heroku container:release -a tinfa-circle-ci web
+          command: HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a tinfa-circle-ci web
       - slack/notify:
           event: fail
           template: basic_fail_1
