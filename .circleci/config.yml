@@ -22,7 +22,7 @@ jobs:
       - checkout
       - run:
           name: Echo environment variables
-          command: echo ${MONGODB_URI} > .env
+          command: echo ${PROJECT_MONGODB_URI} > .env
       - node/install:
           node-version: << parameters.node-version >>
       - run:
