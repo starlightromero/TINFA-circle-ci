@@ -40,13 +40,10 @@ jobs:
       - image: cimg/base:2020.01
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.2
       - heroku/install
       - heroku/push-docker-image:
           app-name: tinfa-circle-ci
           api-key: PROJECT_HEROKU_API_KEY
-          # recursive: true
           process-types: 'web'
       - heroku/release-docker-image:
           app-name: tinfa-circle-ci
@@ -59,11 +56,11 @@ workflows:
     jobs:
       - test:
           context: Slack
-          # filters:
-          #   branches:
-          #     only:
-          #       - development
-          #       - production
+          filters:
+            branches:
+              only:
+                - development
+                - production
           matrix:
             parameters:
               os: [linux]
@@ -72,7 +69,7 @@ workflows:
           requires:
             - test
           context: Slack
-          # filters:
-          #   branches:
-          #     only:
-          #       - production
+          filters:
+            branches:
+              only:
+                - production
