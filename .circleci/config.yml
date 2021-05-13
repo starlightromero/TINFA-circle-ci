@@ -48,10 +48,10 @@ jobs:
           command: docker build .
       - heroku/push-docker-image:
           app-name: tinfa-circle-ci
-          api-key: ${PROJECT_HEROKU_API_KEY}
+          api-key: PROJECT_HEROKU_API_KEY
       - heroku/release-docker-image:
           app-name: tinfa-circle-ci
-          api-key: ${PROJECT_HEROKU_API_KEY}
+          api-key: PROJECT_HEROKU_API_KEY
 
 workflows:
   version: 2
