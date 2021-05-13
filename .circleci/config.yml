@@ -32,9 +32,6 @@ jobs:
       - slack/notify:
           event: fail
           template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
   build-deploy:
     docker:
       - image: cimg/base:2020.01
@@ -49,6 +46,12 @@ jobs:
           app-name: tinfa-circle-ci
           api-key: PROJECT_HEROKU_API_KEY
           process-types: 'web'
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: basic_success_1
 
 workflows:
   version: 2
