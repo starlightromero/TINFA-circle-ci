@@ -46,12 +46,12 @@ jobs:
       - heroku/push-docker-image:
           app-name: tinfa-circle-ci
           api-key: PROJECT_HEROKU_API_KEY
-          recursive: true
-          process-types: ''
+          # recursive: true
+          process-types: 'web'
       - heroku/release-docker-image:
           app-name: tinfa-circle-ci
           api-key: PROJECT_HEROKU_API_KEY
-          process-types: ''
+          process-types: 'web'
 
 workflows:
   version: 2
