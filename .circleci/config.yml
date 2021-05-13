@@ -56,7 +56,7 @@ jobs:
          command: make build-prod
       - heroku/install
       - heroku/push-docker-image:
-          app-name: ${PROJECT_HEROKU_APP}
+          app-name: tinfa-circle-ci
           api-key: PROJECT_HEROKU_API_KEY
 
 workflows:
@@ -77,6 +77,7 @@ workflows:
       - build-deploy:
           requires:
             - test
+          context: Slack
           # filters:
           #   branches:
           #     only:
