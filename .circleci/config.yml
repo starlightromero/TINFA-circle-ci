@@ -35,7 +35,7 @@ jobs:
       - slack/notify:
           event: pass
           template: basic_success_1
-  build:
+  build-deploy:
     docker:
       - image: cimg/base:2020.01
     steps:
@@ -54,11 +54,6 @@ jobs:
       - run:
          name: Build docker image
          command: make build-prod
-  deploy:
-    docker:
-      - image: cimg/base:2020.01
-    steps:
-      - checkout
       - heroku/install
       - heroku/push-docker-image:
           app-name: ${PROJECT_HEROKU_APP}
@@ -79,16 +74,9 @@ workflows:
             parameters:
               os: [linux]
               node-version: ["10.24.1", "12.22.1", "14.16.1", "15.14.0"]
-      - build:
+      - build-deploy:
           requires:
             - test
-          # filters:
-          #   branches:
-          #     only:
-          #       - production
-      - deploy:
-          requires:
-            - build
           # filters:
           #   branches:
           #     only:
