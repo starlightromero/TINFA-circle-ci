@@ -32,34 +32,23 @@ jobs:
       - slack/notify:
           event: fail
           template: basic_fail_1
-  build-and-deploy:
+      - slack/notify:
+          event: pass
+          template: basic_success_1
+  build-deploy:
     docker:
       - image: cimg/base:2020.01
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.2
-      - run:
-          name: Install Heroku CLI
-          command: curl https://cli-assets.heroku.com/install.sh | sh
-      - run:
-          name: Login to Heroku
-          command: HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
-      - run:
-          name: Setup Environment Variables
-          command: echo ${MONGODB_URI} > .env
-      - run:
-          name: Build and Push Docker Image
-          command: HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a tinfa-circle-ci web
-      - run:
-          name: Release Heroku App
-          command: HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a tinfa-circle-ci web
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: success_tagged_deploy_1
+      - heroku/install
+      - heroku/push-docker-image:
+          app-name: tinfa-circle-ci
+          api-key: PROJECT_HEROKU_API_KEY
+          process-types: 'web'
+      - heroku/release-docker-image:
+          app-name: tinfa-circle-ci
+          api-key: PROJECT_HEROKU_API_KEY
+          process-types: 'web'
 
 workflows:
   version: 2
@@ -76,10 +65,10 @@ workflows:
             parameters:
               os: [linux]
               node-version: ["10.24.1", "12.22.1", "14.16.1", "15.14.0"]
-      - build-and-deploy:
-          context: Slack
+      - build-deploy:
           requires:
             - test
+          context: Slack
           filters:
             branches:
               only:
