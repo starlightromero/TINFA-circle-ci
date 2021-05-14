@@ -35,7 +35,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-        version: 20.10.2
+          version: 20.10.2
       - heroku/install
       - heroku/push-docker-image:
           app-name: tinfa-circle-ci
