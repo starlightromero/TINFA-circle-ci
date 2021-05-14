@@ -20,9 +20,6 @@ jobs:
     executor: << parameters.os >>
     steps:
       - checkout
-      - run:
-          name: Echo environment variables
-          command: echo ${PROJECT_MONGODB_URI} > .env
       - node/install:
           node-version: << parameters.node-version >>
       - run:
